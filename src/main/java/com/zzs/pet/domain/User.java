@@ -1,0 +1,70 @@
+package com.zzs.pet.domain;
+
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
+import lombok.Data;
+
+import java.io.Serializable;
+import java.time.LocalDateTime;
+
+/**
+ * @TableName user
+ */
+@TableName(value = "user")
+@Data
+public class User implements Serializable {
+    @TableField(exist = false)
+    private static final long serialVersionUID = 1L;
+    /**
+     * 用户id
+     */
+    @TableId(value = "id", type = IdType.AUTO)
+    private Long id;
+    /**
+     * 用户名
+     */
+    @TableField(value = "name")
+    private String name;
+    /**
+     * 密码
+     */
+    @TableField(value = "password")
+    private String password;
+    /**
+     * 邮箱
+     */
+    @TableField(value = "email")
+    private String email;
+    /**
+     * 年龄
+     */
+    @TableField(value = "age")
+    private Integer age;
+    /**
+     * 手机号
+     */
+    @TableField(value = "phone")
+    private String phone;
+    /**
+     * 地址id
+     */
+    @TableField(value = "address_id")
+    private Long addressId;
+    /**
+     * 头像
+     */
+    @TableField(value = "avatar")
+    private String avatar;
+    /**
+     * 创建时间
+     */
+    @TableField(value = "create_time")
+    private LocalDateTime createTime;
+    /**
+     * 更新时间
+     */
+    @TableField(value = "update_time")
+    private LocalDateTime updateTime;
+}
