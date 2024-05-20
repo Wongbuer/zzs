@@ -24,10 +24,15 @@ public class Order implements Serializable {
     @TableId(value = "id", type = IdType.AUTO)
     private Long id;
     /**
-     * 用户id
+     * 卖家id
      */
-    @TableField(value = "user_id")
-    private Long userId;
+    @TableField(value = "seller_id")
+    private Long sellerId;
+    /**
+     * 买家id
+     */
+    @TableField(value = "buyer_id")
+    private Long buyerId;
     /**
      * 金额
      */
@@ -53,6 +58,16 @@ public class Order implements Serializable {
      */
     @TableField(value = "days")
     private Integer days;
+    /**
+     * 支付时间
+     */
+    @TableField(value = "payment_time")
+    private LocalDateTime paymentTime;
+    /**
+     * 订单状态
+     */
+    @TableField(value = "status")
+    private Integer status;
     /**
      * 创建时间
      */

@@ -6,7 +6,7 @@ import com.zzs.pet.domain.Comment;
 /**
  * @author Wongbuer
  * @description 针对表【comment】的数据库操作Mapper
- * @createDate 2024-05-19 21:16:42
+ * @createDate 2024-05-20 22:57:32
  * @Entity com.zzs.pet.domain.Comment
  */
 public interface CommentMapper extends BaseMapper<Comment> {

@@ -1,6 +1,7 @@
 package com.zzs.pet.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.zzs.pet.common.Result;
 import com.zzs.pet.domain.Announcement;
 
 /**
@@ -9,5 +10,7 @@ import com.zzs.pet.domain.Announcement;
  * @createDate 2024-05-19 21:16:42
  */
 public interface AnnouncementService extends IService<Announcement> {
+    Result publishAnnouncement(Announcement announcement);
 
+    Result modifyAnnouncement(Announcement announcement);
 }

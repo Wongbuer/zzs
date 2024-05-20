@@ -33,10 +33,25 @@ public class Post implements Serializable {
     @TableField(value = "title")
     private String title;
     /**
+     * 封面图
+     */
+    @TableField(value = "cover_img")
+    private String coverImg;
+    /**
      * 内容
      */
     @TableField(value = "content")
     private String content;
+    /**
+     * 宠物类别
+     */
+    @TableField(value = "pet_type")
+    private String petType;
+    /**
+     * 地址信息
+     */
+    @TableField(value = "address")
+    private String address;
     /**
      * 创建时间
      */

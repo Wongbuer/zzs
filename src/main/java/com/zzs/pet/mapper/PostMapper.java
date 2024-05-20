@@ -6,7 +6,7 @@ import com.zzs.pet.domain.Post;
 /**
  * @author Wongbuer
  * @description 针对表【post】的数据库操作Mapper
- * @createDate 2024-05-19 21:16:42
+ * @createDate 2024-05-20 22:57:32
  * @Entity com.zzs.pet.domain.Post
  */
 public interface PostMapper extends BaseMapper<Post> {

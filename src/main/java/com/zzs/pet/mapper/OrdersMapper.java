@@ -6,10 +6,10 @@ import com.zzs.pet.domain.Order;
 /**
  * @author Wongbuer
  * @description 针对表【orders】的数据库操作Mapper
- * @createDate 2024-05-20 22:57:32
- * @Entity com.zzs.pet.domain.Order
+ * @createDate 2024-05-20 22:56:57
+ * @Entity com.zzs.pet.domain.Orders
  */
-public interface OrderMapper extends BaseMapper<Order> {
+public interface OrdersMapper extends BaseMapper<Order> {
 
 }
 
