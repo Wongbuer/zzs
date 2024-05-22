@@ -51,10 +51,10 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         // 获取权限信息
         List<UserRole> userRoleList = userRoleService.list(new LambdaQueryWrapper<UserRole>().eq(UserRole::getUserId, dbUser.getId()));
         List<Role> roleList = roleService.list(new LambdaQueryWrapper<Role>().in(!userRoleList.isEmpty(), Role::getId, userRoleList.stream().map(UserRole::getRoleId).toArray()));
+        dbUser.setRoleList(roleList);
         return Result.success()
                 .set("token", StpUtil.getTokenValue())
                 .set("user", dbUser)
-                .set("roles", roleList)
                 .set("message", "登录成功");
     }
 
