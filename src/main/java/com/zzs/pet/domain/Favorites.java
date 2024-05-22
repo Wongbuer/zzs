@@ -4,6 +4,8 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -21,16 +23,19 @@ public class Favorites implements Serializable {
      * 收藏id
      */
     @TableId(value = "id", type = IdType.AUTO)
+    @JsonSerialize(using = ToStringSerializer.class)
     private Long id;
     /**
      * 用户id
      */
     @TableField(value = "user_id")
+    @JsonSerialize(using = ToStringSerializer.class)
     private Long userId;
     /**
      * 帖子id
      */
     @TableField(value = "post_id")
+    @JsonSerialize(using = ToStringSerializer.class)
     private Long postId;
     /**
      * 创建时间
