@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Configuration;
  * @author Wongbuer
  * @createDate 2024/5/22
  */
-@Configuration
+//@Configuration
 public class MyBatisPlusConfig {
     @Bean
     public String passwordNullableResultSetHandler(SqlSessionFactory sqlSessionFactory) {
