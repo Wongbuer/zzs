@@ -17,10 +17,37 @@
             <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
     </resultMap>
 
+    <resultMap id="withRole" type="com.zzs.pet.domain.User">
+        <id property="id" column="id" jdbcType="BIGINT"/>
+        <result property="name" column="name" jdbcType="VARCHAR"/>
+        <result property="password" column="password" jdbcType="VARCHAR"/>
+        <result property="email" column="email" jdbcType="VARCHAR"/>
+        <result property="age" column="age" jdbcType="INTEGER"/>
+        <result property="phone" column="phone" jdbcType="VARCHAR"/>
+        <result property="addressId" column="address_id" jdbcType="BIGINT"/>
+        <result property="avatar" column="avatar" jdbcType="VARCHAR"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+        <collection ofType="com.zzs.pet.domain.Role" property="roleList">
+            <id property="id" column="role_id" jdbcType="BIGINT"/>
+            <result property="name" column="role_name" jdbcType="VARCHAR"/>
+        </collection>
+    </resultMap>
+
     <sql id="Base_Column_List">
         id,name,password,
         email,age,phone,
         address_id,avatar,create_time,
         update_time
     </sql>
+    <select id="selectUserInfo" resultMap="withRole">
+        select
+        user.*,
+        role.id as role_id,
+        role.name as role_name
+        from user
+        left join user_role on user.id = user_role.user_id
+        left join role on user_role.role_id = role.id
+        where user.id = #{userId}
+    </select>
 </mapper>

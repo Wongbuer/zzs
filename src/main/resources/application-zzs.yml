@@ -1,0 +1,8 @@
+server:
+  port: 10086
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3307/pet
+    username: root
+    password: '300016'

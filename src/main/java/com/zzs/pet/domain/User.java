@@ -10,6 +10,7 @@ import lombok.Data;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * @TableName user
@@ -71,4 +72,7 @@ public class User implements Serializable {
      */
     @TableField(value = "update_time")
     private LocalDateTime updateTime;
+
+    @TableField(exist = false)
+    private List<Role> roleList;
 }

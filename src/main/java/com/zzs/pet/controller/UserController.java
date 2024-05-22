@@ -4,10 +4,7 @@ import cn.dev33.satoken.annotation.SaIgnore;
 import com.zzs.pet.common.Result;
 import com.zzs.pet.domain.User;
 import com.zzs.pet.service.UserService;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 
@@ -48,5 +45,14 @@ public class UserController {
             return Result.fail(400, "参数错误");
         }
         return userService.userLogout(userId);
+    }
+
+    @GetMapping("/info")
+    public Result getUserInfo(Long userId) {
+        // 检查参数
+        if (userId == null) {
+            return Result.fail(400, "参数错误");
+        }
+        return userService.getUserInfo(userId);
     }
 }

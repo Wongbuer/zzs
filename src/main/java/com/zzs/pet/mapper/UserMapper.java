@@ -11,6 +11,7 @@ import com.zzs.pet.domain.User;
  */
 public interface UserMapper extends BaseMapper<User> {
 
+    User selectUserInfo(Long userId);
 }
 
 

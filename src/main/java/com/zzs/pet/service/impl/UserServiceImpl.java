@@ -78,6 +78,12 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         StpUtil.logout(userId);
         return Result.success().set("message", "退出成功");
     }
+
+    @Override
+    public Result getUserInfo(Long userId) {
+        User user = baseMapper.selectUserInfo(userId);
+        return Result.success().set("user", user).set("message", "用户信息获取成功");
+    }
 }
 
 
