@@ -13,9 +13,11 @@ import com.zzs.pet.service.RoleService;
 import com.zzs.pet.service.UserRoleService;
 import com.zzs.pet.service.UserService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author Wongbuer
@@ -59,18 +61,26 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public Result userRegister(User user) {
         // 判断数据库是否有账号
-        LambdaQueryWrapper<User> wrapper = new LambdaQueryWrapper<>();
-        wrapper
-                .eq(User::getName, user.getName())
-                .or().eq(User::getPhone, user.getPhone());
-        User dbUser = getOne(wrapper);
-        if (dbUser != null) {
-            return Result.fail(401, "账号已存在");
+        try {
+            LambdaQueryWrapper<User> wrapper = new LambdaQueryWrapper<>();
+            wrapper
+                    .eq(User::getName, user.getName())
+                    .or().eq(User::getPhone, user.getPhone());
+            User dbUser = getOne(wrapper);
+            if (dbUser != null) {
+                return Result.fail(401, "账号已存在");
+            }
+            user.setPassword(SaSecureUtil.sha256BySalt(SALT, user.getPassword()));
+            save(user);
+            List<UserRole> userRoleList = user.getRoleList().stream().map(role -> new UserRole(user.getId(), role.getId())).collect(Collectors.toList());
+            userRoleService.saveBatch(userRoleList);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
-        user.setPassword(SaSecureUtil.sha256BySalt(SALT, user.getPassword()));
-        return save(user) ? Result.success().set("message", "注册成功") : Result.fail(401, "注册失败");
+        return Result.success().set("message", "注册成功");
     }
 
     @Override

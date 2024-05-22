@@ -1,9 +1,11 @@
 package com.zzs.pet.controller;
 
 import cn.dev33.satoken.annotation.SaIgnore;
+import cn.hutool.core.collection.ListUtil;
 import com.zzs.pet.common.Result;
 import com.zzs.pet.domain.User;
 import com.zzs.pet.service.UserService;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -32,7 +34,7 @@ public class UserController {
     @SaIgnore
     public Result userRegister(@RequestBody User user) {
         // 检查参数
-        if (user.getName() == null || user.getPassword() == null) {
+        if (user.getName() == null || user.getPassword() == null || CollectionUtils.isEmpty(user.getRoleList())) {
             return Result.fail(400, "参数错误");
         }
         return userService.userRegister(user);
