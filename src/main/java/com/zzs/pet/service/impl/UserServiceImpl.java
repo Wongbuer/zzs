@@ -16,7 +16,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -54,9 +56,11 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         List<UserRole> userRoleList = userRoleService.list(new LambdaQueryWrapper<UserRole>().eq(UserRole::getUserId, dbUser.getId()));
         List<Role> roleList = roleService.list(new LambdaQueryWrapper<Role>().in(!userRoleList.isEmpty(), Role::getId, userRoleList.stream().map(UserRole::getRoleId).toArray()));
         dbUser.setRoleList(roleList);
-        return Result.success()
-                .set("token", StpUtil.getTokenValue())
-                .set("user", dbUser)
+        Map<String, Object> data = new HashMap<>(2);
+        data.put("token", StpUtil.getTokenValue());
+        data.put("user", dbUser);
+        return Result
+                .success(data)
                 .set("message", "登录成功");
     }
 
