@@ -52,12 +52,6 @@ public class User implements Serializable {
     @TableField(value = "phone")
     private String phone;
     /**
-     * 地址id
-     */
-    @TableField(value = "address_id")
-    @JsonSerialize(using = ToStringSerializer.class)
-    private Long addressId;
-    /**
      * 头像
      */
     @TableField(value = "avatar")
@@ -72,7 +66,14 @@ public class User implements Serializable {
      */
     @TableField(value = "update_time")
     private LocalDateTime updateTime;
-
+    /**
+     * 角色列表
+     */
     @TableField(exist = false)
     private List<Role> roleList;
+    /**
+     * 地址列表
+     */
+    @TableField(exist = false)
+    private List<Address> addressList;
 }

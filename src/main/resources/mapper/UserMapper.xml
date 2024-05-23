@@ -11,26 +11,34 @@
             <result property="email" column="email" jdbcType="VARCHAR"/>
             <result property="age" column="age" jdbcType="INTEGER"/>
             <result property="phone" column="phone" jdbcType="VARCHAR"/>
-            <result property="addressId" column="address_id" jdbcType="BIGINT"/>
             <result property="avatar" column="avatar" jdbcType="VARCHAR"/>
             <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
             <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
     </resultMap>
 
-    <resultMap id="withRole" type="com.zzs.pet.domain.User">
+    <resultMap id="withRoleAndAddress" type="com.zzs.pet.domain.User">
         <id property="id" column="id" jdbcType="BIGINT"/>
         <result property="name" column="name" jdbcType="VARCHAR"/>
         <result property="password" column="password" jdbcType="VARCHAR"/>
         <result property="email" column="email" jdbcType="VARCHAR"/>
         <result property="age" column="age" jdbcType="INTEGER"/>
         <result property="phone" column="phone" jdbcType="VARCHAR"/>
-        <result property="addressId" column="address_id" jdbcType="BIGINT"/>
         <result property="avatar" column="avatar" jdbcType="VARCHAR"/>
         <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
         <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
         <collection ofType="com.zzs.pet.domain.Role" property="roleList">
             <id property="id" column="role_id" jdbcType="BIGINT"/>
             <result property="name" column="role_name" jdbcType="VARCHAR"/>
+        </collection>
+        <collection ofType="com.zzs.pet.domain.Address" property="addressList">
+            <id property="id" column="address_id" jdbcType="BIGINT"/>
+            <result property="userId" column="user_id" jdbcType="BIGINT"/>
+            <result property="province" column="province" jdbcType="VARCHAR"/>
+            <result property="city" column="city" jdbcType="VARCHAR"/>
+            <result property="district" column="district" jdbcType="VARCHAR"/>
+            <result property="detail" column="detail" jdbcType="VARCHAR"/>
+            <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+            <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
         </collection>
     </resultMap>
 
@@ -40,14 +48,24 @@
         address_id,avatar,create_time,
         update_time
     </sql>
-    <select id="selectUserInfo" resultMap="withRole">
+    <select id="selectUserInfo" resultMap="withRoleAndAddress">
         select
         user.*,
         role.id as role_id,
-        role.name as role_name
+        role.name as role_name,
+        address.id as address_id,
+        address.user_id,
+        address.province,
+        address.city,
+        address.district,
+        address.detail,
+        address.create_time as address_create_time,
+        address.update_time as address_update_time
         from user
         left join user_role on user.id = user_role.user_id
         left join role on user_role.role_id = role.id
+        left join user_address ua on user.id = ua.user_id
+        left join address on ua.address_id = address.id
         where user.id = #{userId}
     </select>
 </mapper>

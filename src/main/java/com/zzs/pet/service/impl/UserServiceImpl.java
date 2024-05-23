@@ -96,7 +96,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     @Override
     public Result getUserInfo(Long userId) {
         User user = baseMapper.selectUserInfo(userId);
-        return Result.success().set("user", user).set("message", "用户信息获取成功");
+        return Result.success(user).set("message", "用户信息获取成功");
     }
 }
 
