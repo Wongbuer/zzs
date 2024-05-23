@@ -66,9 +66,7 @@ public class PostController {
         if (postListRequest.getCurrent() == null || postListRequest.getSize() == null) {
             return Result.fail(400, "参数错误");
         }
-        if (postListRequest.getUserId() == null) {
-            postListRequest.setUserId(StpUtil.getLoginIdAsLong());
-        }
+        postListRequest.setMyUserId(StpUtil.getLoginIdAsLong());
         return postService.getPostList(postListRequest);
     }
 

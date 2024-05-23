@@ -53,7 +53,12 @@ public class PostServiceImpl extends ServiceImpl<PostMapper, Post> implements Po
         // 获取帖子列表
         Page<Post> page = new Page<>(postListRequest.getCurrent(), postListRequest.getSize());
         List<Post> postList = baseMapper.getPostList(page, postListRequest).getRecords();
-        return Result.success(postList).set("message", "获取帖子列表成功");
+        Map<String, Object> data = new HashMap<>();
+        data.put("postList", postList);
+        data.put("total", page.getTotal());
+        data.put("current", page.getCurrent());
+        data.put("size", page.getSize());
+        return Result.success(data).set("message", "获取帖子列表成功");
     }
 }
 

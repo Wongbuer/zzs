@@ -5,15 +5,15 @@
 <mapper namespace="com.zzs.pet.mapper.PostMapper">
 
     <resultMap id="BaseResultMap" type="com.zzs.pet.domain.Post">
-            <id property="id" column="id" jdbcType="BIGINT"/>
-            <result property="userId" column="user_id" jdbcType="BIGINT"/>
-            <result property="title" column="title" jdbcType="VARCHAR"/>
-            <result property="coverImg" column="cover_img" jdbcType="VARCHAR"/>
-            <result property="content" column="content" jdbcType="VARCHAR"/>
-            <result property="petType" column="pet_type" jdbcType="VARCHAR"/>
-            <result property="address" column="address" jdbcType="VARCHAR"/>
-            <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
-            <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+        <id property="id" column="id" jdbcType="BIGINT"/>
+        <result property="userId" column="user_id" jdbcType="BIGINT"/>
+        <result property="title" column="title" jdbcType="VARCHAR"/>
+        <result property="coverImg" column="cover_img" jdbcType="VARCHAR"/>
+        <result property="content" column="content" jdbcType="VARCHAR"/>
+        <result property="petType" column="pet_type" jdbcType="VARCHAR"/>
+        <result property="address" column="address" jdbcType="VARCHAR"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
     </resultMap>
 
     <sql id="Base_Column_List">
@@ -23,17 +23,22 @@
     </sql>
     <select id="getPostList" resultType="com.zzs.pet.domain.Post">
         select post.*,
-               (select count(*) from pet.favorites where post_id = post.id) as isFavorite,
-               (select count(*) from pet.likes where post_id = post.id) as isLiked
+        (select count(*) from pet.favorites where post_id = post.id and post.user_id = #{postListRequest.myUserId}) as isFavorite,
+        (select count(*) from pet.likes where post_id = post.id and post.user_id = #{postListRequest.myUserId}) as isLiked
         from post
-                 left join pet.favorites f on post.id = f.post_id
-                 left join pet.likes l on post.id = l.post_id
-        where post.user_id = #{postListRequest.userId}
-        <if test="postListRequest.type != null">
-            and pet_type = #{postListRequest.type}
-        </if>
-        <if test="postListRequest.keywords != null">
-            and (post.title like concat('%',#{postListRequest.keywords},'%') or post.address like concat('%',#{postListRequest.keywords},'%'))
-        </if>
+        left join pet.favorites f on post.id = f.post_id
+        left join pet.likes l on post.id = l.post_id
+        <where>
+            <if test="postListRequest.userId != null">
+                post.user_id = #{postListRequest.userId}
+            </if>
+            <if test="postListRequest.type != ''">
+                and pet_type = #{postListRequest.type}
+            </if>
+            <if test="postListRequest.keywords != ''">
+                and (post.title like concat('%',#{postListRequest.keywords},'%') or post.address like
+                concat('%',#{postListRequest.keywords},'%'))
+            </if>
+        </where>
     </select>
 </mapper>

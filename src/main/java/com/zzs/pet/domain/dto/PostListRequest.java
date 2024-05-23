@@ -14,4 +14,5 @@ public class PostListRequest extends PageRequest {
     private String type;
     private String keywords;
     private Long userId;
+    private Long myUserId;
 }
