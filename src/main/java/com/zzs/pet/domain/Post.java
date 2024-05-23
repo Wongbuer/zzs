@@ -66,4 +66,14 @@ public class Post implements Serializable {
      */
     @TableField(value = "update_time")
     private LocalDateTime updateTime;
+    /**
+     * 是否已点赞
+     */
+    @TableField(exist = false)
+    private Boolean isLiked;
+    /**
+     * 是否已收藏
+     */
+    @TableField(exist = false)
+    private Boolean isFavorite;
 }

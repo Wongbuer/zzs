@@ -1,9 +1,14 @@
 package com.zzs.pet.controller;
 
+import cn.dev33.satoken.stp.StpUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.zzs.pet.common.PageRequest;
 import com.zzs.pet.common.Result;
+import com.zzs.pet.domain.Likes;
 import com.zzs.pet.domain.Post;
+import com.zzs.pet.domain.dto.PostListRequest;
+import com.zzs.pet.service.FavoritesService;
+import com.zzs.pet.service.LikesService;
 import com.zzs.pet.service.PostService;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.util.StringUtils;
@@ -21,6 +26,10 @@ import java.util.List;
 public class PostController {
     @Resource
     private PostService postService;
+    @Resource
+    private LikesService likesService;
+    @Resource
+    private FavoritesService favoritesService;
 
     /**
      * @param post 文章
@@ -47,19 +56,20 @@ public class PostController {
     }
 
     /**
-     * @param pageRequest 分页请求
+     * @param postListRequest 分页请求
      * @return {@link Result } 帖子分页列表
      */
     @ApiOperation(value = "获取帖子列表(分页)")
     @GetMapping("/page")
-    public Result getPostList(PageRequest pageRequest) {
+    public Result getPostList(PostListRequest postListRequest) {
         // 检查参数
-        if (pageRequest.getCurrent() == null || pageRequest.getSize() == null) {
+        if (postListRequest.getCurrent() == null || postListRequest.getSize() == null) {
             return Result.fail(400, "参数错误");
         }
-        Page<Post> page = new Page<>(pageRequest.getCurrent(), pageRequest.getSize());
-        List<Post> postList = postService.page(page).getRecords();
-        return Result.success(postList);
+        if (postListRequest.getUserId() == null) {
+            postListRequest.setUserId(StpUtil.getLoginIdAsLong());
+        }
+        return postService.getPostList(postListRequest);
     }
 
     @PostMapping("/modify")

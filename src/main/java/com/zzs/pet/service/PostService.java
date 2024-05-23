@@ -1,8 +1,10 @@
 package com.zzs.pet.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.zzs.pet.common.PageRequest;
 import com.zzs.pet.common.Result;
 import com.zzs.pet.domain.Post;
+import com.zzs.pet.domain.dto.PostListRequest;
 
 /**
  * @author Wongbuer
@@ -16,4 +18,6 @@ public interface PostService extends IService<Post> {
     Result getPostDetail(Long postId);
 
     Result modifyPost(Post post);
+
+    Result getPostList(PostListRequest postListRequest);
 }

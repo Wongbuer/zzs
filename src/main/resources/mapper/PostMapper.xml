@@ -21,4 +21,19 @@
         cover_img,content,pet_type,
         address,create_time,update_time
     </sql>
+    <select id="getPostList" resultType="com.zzs.pet.domain.Post">
+        select post.*,
+               (select count(*) from pet.favorites where post_id = post.id) as isFavorite,
+               (select count(*) from pet.likes where post_id = post.id) as isLiked
+        from post
+                 left join pet.favorites f on post.id = f.post_id
+                 left join pet.likes l on post.id = l.post_id
+        where post.user_id = #{postListRequest.userId}
+        <if test="postListRequest.type != null">
+            and pet_type = #{postListRequest.type}
+        </if>
+        <if test="postListRequest.keywords != null">
+            and (post.title like concat('%',#{postListRequest.keywords},'%') or post.address like concat('%',#{postListRequest.keywords},'%'))
+        </if>
+    </select>
 </mapper>
