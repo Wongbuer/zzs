@@ -13,4 +13,6 @@ public interface AnnouncementService extends IService<Announcement> {
     Result publishAnnouncement(Announcement announcement);
 
     Result modifyAnnouncement(Announcement announcement);
+
+    Result deleteAnnouncementById(Long announcementId);
 }

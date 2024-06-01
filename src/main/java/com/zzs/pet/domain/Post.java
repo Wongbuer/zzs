@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import lombok.Data;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -37,10 +38,10 @@ public class Post implements Serializable {
     @TableField(value = "title")
     private String title;
     /**
-     * 封面图
+     * 图片(链接, 逗号分隔)
      */
-    @TableField(value = "cover_img")
-    private String coverImg;
+    @TableField(value = "imgs")
+    private String imgs;
     /**
      * 内容
      */
@@ -54,8 +55,8 @@ public class Post implements Serializable {
     /**
      * 地址信息
      */
-    @TableField(value = "address")
-    private String address;
+    @TableField(value = "address_id")
+    private Long addressId;
     /**
      * 创建时间
      */
@@ -76,4 +77,9 @@ public class Post implements Serializable {
      */
     @TableField(exist = false)
     private Boolean isFavorite;
+    /**
+     * 图片列表
+     */
+    @TableField(exist = false)
+    private MultipartFile[] imgList;
 }

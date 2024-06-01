@@ -83,4 +83,9 @@ public class Order implements Serializable {
      */
     @TableField(value = "update_time")
     private LocalDateTime updateTime;
+    /**
+     * 评价
+     */
+    @TableField(value = "comment")
+    private String comment;
 }

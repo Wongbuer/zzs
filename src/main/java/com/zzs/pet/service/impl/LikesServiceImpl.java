@@ -19,6 +19,10 @@ public class LikesServiceImpl extends ServiceImpl<LikesMapper, Likes> implements
 
     @Override
     public Result likePost(Likes likes) {
+        boolean isExisted = exists(new LambdaQueryWrapper<Likes>().eq(Likes::getUserId, likes.getUserId()).eq(Likes::getPostId, likes.getPostId()));
+        if (isExisted) {
+            return Result.fail(400, "已经点赞过了");
+        }
         boolean isSaved = save(likes);
         return isSaved ? Result.success("message", "点赞成功") : Result.fail(500, "点赞失败");
     }

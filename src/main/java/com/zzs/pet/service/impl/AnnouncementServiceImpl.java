@@ -27,6 +27,12 @@ public class AnnouncementServiceImpl extends ServiceImpl<AnnouncementMapper, Ann
         boolean isUpdated = updateById(announcement);
         return isUpdated ? Result.success().set("message", "修改公告成功") : Result.fail(500, "修改公告失败");
     }
+
+    @Override
+    public Result deleteAnnouncementById(Long announcementId) {
+        removeById(announcementId);
+        return Result.success();
+    }
 }
 
 

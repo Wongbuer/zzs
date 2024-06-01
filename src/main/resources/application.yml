@@ -26,3 +26,15 @@ knife4j:
     language: zh_cn
 sa-token:
   token-name: token
+dromara:
+  x-file-storage:
+    default-platform: qiniu-kodo-1
+    thumbnail-suffix: ".jpg"
+    qiniu-kodo:
+      - platform: qiniu-kodo-1 # 存储平台标识
+        enable-storage: true  # 启用存储
+        access-key: C1AmRfZvtZqa_BaSMR5ikU5U91dcoGMgwmo2GT-9
+        secret-key: te0QflMqdDaiWDrpS5nFdwmvu6YILEBGVpRZMBcS
+        bucket-name: zzs-pet
+        domain: http://sdy0ifgam.hn-bkt.clouddn.com/
+        base-path: pic/ # 基础路径

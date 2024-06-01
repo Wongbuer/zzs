@@ -9,8 +9,13 @@ import com.zzs.pet.domain.Post;
 import com.zzs.pet.domain.dto.PostListRequest;
 import com.zzs.pet.mapper.PostMapper;
 import com.zzs.pet.service.PostService;
+import org.dromara.x.file.storage.core.FileInfo;
+import org.dromara.x.file.storage.core.FileStorageService;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,10 +27,23 @@ import java.util.Map;
  */
 @Service
 public class PostServiceImpl extends ServiceImpl<PostMapper, Post> implements PostService {
+    @Resource
+    private FileStorageService fileStorageService;
 
     @Override
     public Result uploadPost(Post post) {
         // 插入数据
+        List<String> imgs = new ArrayList<>();
+        try {
+            for (MultipartFile multipartFile : post.getImgList()) {
+                FileInfo fileInfo = fileStorageService.of(multipartFile).upload();
+                String url = fileInfo.getUrl();
+                imgs.add(url);
+            }
+        } catch (Exception e) {
+            throw new RuntimeException("文件上传失败");
+        }
+        post.setImgs(String.join(",", imgs));
         boolean isSaved = save(post);
         return isSaved ? Result.success("message", "上传帖子成功") : Result.fail(500, "上传帖子失败");
     }

@@ -1,5 +1,6 @@
 package com.zzs.pet.controller;
 
+import cn.dev33.satoken.stp.StpUtil;
 import com.zzs.pet.common.Result;
 import com.zzs.pet.domain.Likes;
 import com.zzs.pet.service.LikesService;
@@ -24,8 +25,11 @@ public class LikeController {
     @PostMapping("/post")
     public Result likePost(@RequestBody Likes likes) {
         // 检查参数
-        if (likes.getUserId() == null || likes.getPostId() == null) {
+        if (likes.getPostId() == null) {
             return Result.fail(400, "参数错误");
+        }
+        if (likes.getUserId() == null) {
+            likes.setUserId(StpUtil.getLoginIdAsLong());
         }
         return likesService.likePost(likes);
     }

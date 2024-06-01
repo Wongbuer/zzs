@@ -1,7 +1,9 @@
 package com.zzs.pet.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.zzs.pet.common.Result;
 import com.zzs.pet.domain.Order;
+import com.zzs.pet.domain.dto.OrderRequest;
 
 /**
  * @author Wongbuer
@@ -10,4 +12,21 @@ import com.zzs.pet.domain.Order;
  */
 public interface OrderService extends IService<Order> {
 
+    Result createOrder(Order order);
+
+    Result getOrderList(OrderRequest orderRequest);
+
+    Result modifyOrder(Order order);
+
+    Result getOrderDetails(Long orderId);
+
+    Result deleteOrderById(Long orderId);
+
+    Result payOrder(Long orderId);
+
+    Result completeOrder(Long orderId);
+
+    Result refundOrder(Long orderId);
+
+    Result commentOrder(Order order);
 }

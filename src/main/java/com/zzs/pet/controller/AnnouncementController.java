@@ -4,10 +4,7 @@ import com.zzs.pet.common.Result;
 import com.zzs.pet.domain.Announcement;
 import com.zzs.pet.service.AnnouncementService;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 
@@ -37,5 +34,10 @@ public class AnnouncementController {
             return Result.fail(400, "标题或内容不能为空");
         }
         return announcementService.modifyAnnouncement(announcement);
+    }
+
+    @PostMapping("/delete/{announcementId}")
+    public Result deleteAnnouncementById(@PathVariable Long announcementId) {
+        return announcementService.deleteAnnouncementById(announcementId);
     }
 }
