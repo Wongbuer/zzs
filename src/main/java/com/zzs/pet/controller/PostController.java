@@ -39,7 +39,7 @@ public class PostController {
     @PostMapping("/upload")
     public Result uploadPost(@ModelAttribute Post post) {
         // 检查参数
-        if (!StringUtils.hasText(post.getTitle()) || !StringUtils.hasText(post.getContent()) || post.getUserId() == null) {
+        if (!StringUtils.hasText(post.getTitle()) || post.getUserId() == null) {
             return Result.fail(400, "标题不能为空");
         }
         return postService.uploadPost(post);
