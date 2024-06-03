@@ -20,4 +20,8 @@
         city,district,detail,
         create_time,update_time
     </sql>
+    <update id="countSameAddress">
+        select id
+        from pet.address where concat(province, city, district, detail) = #{address}
+    </update>
 </mapper>

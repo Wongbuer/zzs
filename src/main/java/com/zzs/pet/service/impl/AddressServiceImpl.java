@@ -15,6 +15,10 @@ import org.springframework.stereotype.Service;
 public class AddressServiceImpl extends ServiceImpl<AddressMapper, Address>
         implements AddressService {
 
+    @Override
+    public Long countSameAddress(String address) {
+        return baseMapper.countSameAddress(address);
+    }
 }
 
 

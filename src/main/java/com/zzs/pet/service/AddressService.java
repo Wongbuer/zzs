@@ -9,5 +9,5 @@ import com.zzs.pet.domain.Address;
  * @createDate 2024-05-19 21:16:42
  */
 public interface AddressService extends IService<Address> {
-
+    Long countSameAddress(String address);
 }

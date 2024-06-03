@@ -27,6 +27,16 @@ public class Order implements Serializable {
     @JsonSerialize(using = ToStringSerializer.class)
     private Long id;
     /**
+     * 订单名称
+     */
+    @TableField(value = "order_name")
+    private String orderName;
+    /**
+     * 地址id
+     */
+    @TableField(value = "address_id")
+    private Long addressId;
+    /**
      * 卖家id
      */
     @TableField(value = "seller_id")
@@ -88,4 +98,9 @@ public class Order implements Serializable {
      */
     @TableField(value = "comment")
     private String comment;
+    /**
+     * 地址
+     */
+    @TableField(exist = false)
+    private String address;
 }

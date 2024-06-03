@@ -11,6 +11,7 @@ import com.zzs.pet.domain.Address;
  */
 public interface AddressMapper extends BaseMapper<Address> {
 
+    Long countSameAddress(String address);
 }
 
 

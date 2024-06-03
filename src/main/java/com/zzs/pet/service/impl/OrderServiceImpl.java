@@ -5,17 +5,21 @@ import cn.hutool.core.date.LocalDateTimeUtil;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zzs.pet.common.Result;
 import com.zzs.pet.constant.OrderTimeoutConstant;
+import com.zzs.pet.domain.Address;
 import com.zzs.pet.domain.Order;
 import com.zzs.pet.domain.dto.OrderRequest;
 import com.zzs.pet.enums.OrderStatusEnum;
 import com.zzs.pet.mapper.OrderMapper;
+import com.zzs.pet.service.AddressService;
 import com.zzs.pet.service.OrderService;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -28,11 +32,14 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order>
         implements OrderService {
     @Resource
     private RedisTemplate<String, String> redisTemplate;
+    @Resource
+    private AddressService addressService;
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public Result createOrder(Order order) {
         // 检查必要参数
-        if (order.getSellerId() == null || order.getBuyerId() == null || order.getAmount() == null || order.getType() == null || order.getDays() == null) {
+        if (order.getSellerId() == null || order.getBuyerId() == null || order.getAmount() == null || order.getType() == null || order.getDays() == null || order.getAddress() == null) {
             return Result.fail(400, "参数错误");
         }
         // 判断当前用户是否是买家或卖家
@@ -51,6 +58,18 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order>
         }
         // 设置状态
         order.setStatus(OrderStatusEnum.WAIT_FOR_PAY.getCode());
+        // 查询是否有相同address, 如果有则直接使用, 没有则新建
+        Long addressId = addressService.countSameAddress(order.getAddress());
+        if (addressId != null && addressId != -1) {
+            order.setAddressId(addressId);
+        } else {
+            Address address = new Address();
+            address.setDetail(order.getAddress());
+            // 获取当前用户id
+            address.setUserId(userId);
+            addressService.save(address);
+            order.setAddressId(address.getId());
+        }
         // 保存订单
         save(order);
         return Result.success();
@@ -69,6 +88,14 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order>
                 .eq(StringUtils.hasText(orderRequest.getType()), Order::getType, orderRequest.getType())
                 .between(orderRequest.getStartTime() != null && orderRequest.getEndTime() != null, Order::getStartTime, orderRequest.getStartTime(), orderRequest.getEndTime())
                 .list();
+        orderList.forEach(order -> {
+            Address address = addressService.getById(order.getAddressId());
+            String province = Optional.ofNullable(address.getProvince()).orElse("");
+            String city = Optional.ofNullable(address.getCity()).orElse("");
+            String district = Optional.ofNullable(address.getDistrict()).orElse("");
+            String detail = Optional.ofNullable(address.getDetail()).orElse("");
+            order.setAddress(province + city + district + detail);
+        });
         return Result.success(orderList);
     }
 
