@@ -82,4 +82,9 @@ public class Post implements Serializable {
      */
     @TableField(exist = false)
     private MultipartFile[] imgList;
+    /**
+     * 地址
+     */
+    @TableField(exist = false)
+    private String address;
 }

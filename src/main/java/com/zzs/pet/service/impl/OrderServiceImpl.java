@@ -7,17 +7,23 @@ import com.zzs.pet.common.Result;
 import com.zzs.pet.constant.OrderTimeoutConstant;
 import com.zzs.pet.domain.Address;
 import com.zzs.pet.domain.Order;
+import com.zzs.pet.domain.Post;
+import com.zzs.pet.domain.User;
 import com.zzs.pet.domain.dto.OrderRequest;
 import com.zzs.pet.enums.OrderStatusEnum;
 import com.zzs.pet.mapper.OrderMapper;
 import com.zzs.pet.service.AddressService;
 import com.zzs.pet.service.OrderService;
+import com.zzs.pet.service.PostService;
+import com.zzs.pet.service.UserService;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
+import java.time.Duration;
+import java.time.temporal.TemporalUnit;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
@@ -34,16 +40,27 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order>
     private RedisTemplate<String, String> redisTemplate;
     @Resource
     private AddressService addressService;
+    @Resource
+    private PostService postService;
+    @Resource
+    private UserService userService;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public Result createOrder(Order order) {
         // 检查必要参数
-        if (order.getSellerId() == null || order.getBuyerId() == null || order.getAmount() == null || order.getType() == null || order.getDays() == null || order.getAddress() == null) {
+        long userId = StpUtil.getLoginIdAsLong();
+        if (order.getBuyerId() == null) {
+            order.setBuyerId(userId);
+        }
+        if (order.getSellerId() == null || order.getBuyerId() == null || order.getAmount() == null || order.getType() == null || order.getDays() == null) {
             return Result.fail(400, "参数错误");
         }
+        // 填充address
+        Long postId = order.getPostId();
+        Post post = postService.getById(postId);
+        order.setAddressId(post.getAddressId());
         // 判断当前用户是否是买家或卖家
-        long userId = StpUtil.getLoginIdAsLong();
         if (userId != order.getBuyerId() && userId != order.getSellerId()) {
             return Result.fail(400, "当前用户不是买家或卖家");
         }
@@ -58,18 +75,6 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order>
         }
         // 设置状态
         order.setStatus(OrderStatusEnum.WAIT_FOR_PAY.getCode());
-        // 查询是否有相同address, 如果有则直接使用, 没有则新建
-        Long addressId = addressService.countSameAddress(order.getAddress());
-        if (addressId != null && addressId != -1) {
-            order.setAddressId(addressId);
-        } else {
-            Address address = new Address();
-            address.setDetail(order.getAddress());
-            // 获取当前用户id
-            address.setUserId(userId);
-            addressService.save(address);
-            order.setAddressId(address.getId());
-        }
         // 保存订单
         save(order);
         return Result.success();
@@ -81,21 +86,24 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order>
         long userId = StpUtil.getLoginIdAsLong();
         // 获取当前用户所有的订单
         List<Order> orderList = lambdaQuery()
-                .eq(orderRequest.getBuyerId() != null, Order::getBuyerId, userId)
+                .eq(orderRequest.getBuyerId() != null, Order::getBuyerId, orderRequest.getBuyerId())
                 .eq(orderRequest.getStatus() != null, Order::getStatus, orderRequest.getStatus())
                 .eq(orderRequest.getAmount() != null, Order::getAmount, orderRequest.getAmount())
-                .eq(orderRequest.getSellerId() != null, Order::getSellerId, userId)
+                .eq(orderRequest.getSellerId() != null, Order::getSellerId, orderRequest.getSellerId())
                 .eq(StringUtils.hasText(orderRequest.getType()), Order::getType, orderRequest.getType())
                 .between(orderRequest.getStartTime() != null && orderRequest.getEndTime() != null, Order::getStartTime, orderRequest.getStartTime(), orderRequest.getEndTime())
                 .list();
         orderList.forEach(order -> {
             Address address = addressService.getById(order.getAddressId());
+            User user = userService.getById(order.getSellerId());
+            order.setPhone(user.getPhone());
             String province = Optional.ofNullable(address.getProvince()).orElse("");
             String city = Optional.ofNullable(address.getCity()).orElse("");
             String district = Optional.ofNullable(address.getDistrict()).orElse("");
             String detail = Optional.ofNullable(address.getDetail()).orElse("");
             order.setAddress(province + city + district + detail);
         });
+
         return Result.success(orderList);
     }
 

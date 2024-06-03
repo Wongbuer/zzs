@@ -5,9 +5,11 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zzs.pet.common.PageRequest;
 import com.zzs.pet.common.Result;
+import com.zzs.pet.domain.Address;
 import com.zzs.pet.domain.Post;
 import com.zzs.pet.domain.dto.PostListRequest;
 import com.zzs.pet.mapper.PostMapper;
+import com.zzs.pet.service.AddressService;
 import com.zzs.pet.service.PostService;
 import org.dromara.x.file.storage.core.FileInfo;
 import org.dromara.x.file.storage.core.FileStorageService;
@@ -29,6 +31,8 @@ import java.util.Map;
 public class PostServiceImpl extends ServiceImpl<PostMapper, Post> implements PostService {
     @Resource
     private FileStorageService fileStorageService;
+    @Resource
+    private AddressService addressService;
 
     @Override
     public Result uploadPost(Post post) {
@@ -44,6 +48,18 @@ public class PostServiceImpl extends ServiceImpl<PostMapper, Post> implements Po
             throw new RuntimeException("文件上传失败");
         }
         post.setImgs(String.join(",", imgs));
+        Long addressId = addressService.countSameAddress(post.getAddress());
+        long userId = StpUtil.getLoginIdAsLong();
+        if (addressId != null && addressId != -1) {
+            post.setAddressId(addressId);
+        } else {
+            Address address = new Address();
+            address.setDetail(post.getAddress());
+            // 获取当前用户id
+            address.setUserId(userId);
+            addressService.save(address);
+            post.setAddressId(address.getId());
+        }
         boolean isSaved = save(post);
         return isSaved ? Result.success("message", "上传帖子成功") : Result.fail(500, "上传帖子失败");
     }

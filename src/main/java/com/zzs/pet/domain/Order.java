@@ -4,8 +4,10 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
+import com.github.xiaoymin.knife4j.annotations.Ignore;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -17,6 +19,7 @@ import java.time.LocalDateTime;
  */
 @TableName(value = "orders")
 @Data
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Order implements Serializable {
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
@@ -26,6 +29,11 @@ public class Order implements Serializable {
     @TableId(value = "id", type = IdType.AUTO)
     @JsonSerialize(using = ToStringSerializer.class)
     private Long id;
+    /**
+     * 关联帖子id
+     */
+    @TableField(value = "post_id")
+    private Long postId;
     /**
      * 订单名称
      */
@@ -103,4 +111,19 @@ public class Order implements Serializable {
      */
     @TableField(exist = false)
     private String address;
+    /**
+     * 标题
+     */
+    @TableField(value = "title")
+    private String title;
+    /**
+     * 单价
+     */
+    @TableField(value = "pay_day")
+    private BigDecimal payDay;
+    /**
+     * 卖家手机
+     */
+    @TableField(exist = false)
+    private String phone;
 }
