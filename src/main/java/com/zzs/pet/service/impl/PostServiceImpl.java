@@ -1,6 +1,7 @@
 package com.zzs.pet.service.impl;
 
 import cn.dev33.satoken.stp.StpUtil;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zzs.pet.common.PageRequest;
@@ -94,6 +95,35 @@ public class PostServiceImpl extends ServiceImpl<PostMapper, Post> implements Po
         data.put("size", page.getSize());
         return Result.success(data).set("message", "获取帖子列表成功");
     }
+
+    @Override
+    public Result getRecommendPost(PageRequest pageRequest) {
+        Page<Post> page = new Page<>(pageRequest.getCurrent(), pageRequest.getSize());
+        LambdaQueryWrapper<Post> wrapper = new LambdaQueryWrapper<>();
+        wrapper.last("order by rand()");
+        page(page, wrapper);
+        List<Post> postList = page.getRecords();
+        return Result.success(postList);
+    }
+
+    @Override
+    public Result getNewestPost(PageRequest pageRequest) {
+        Page<Post> page = new Page<>(pageRequest.getCurrent(), pageRequest.getSize());
+        lambdaQuery().orderByDesc(Post::getCreateTime)
+                .page(page);
+        List<Post> postList = page.getRecords();
+        return Result.success(postList);
+    }
+
+    @Override
+    public Result getHotPost(PageRequest pageRequest) {
+        Page<Post> page = new Page<>(pageRequest.getCurrent(), pageRequest.getSize());
+        baseMapper.selectHotPost(page);
+        List<Post> postList = page.getRecords();
+        return Result.success(postList);
+    }
+
+
 }
 
 

@@ -88,4 +88,19 @@ public class PostController {
         boolean isDeleted = postService.removeById(postId);
         return isDeleted ? Result.success("message", "删除成功") : Result.fail(400, "删除失败");
     }
+
+    @GetMapping("/recommend")
+    public Result getRecommendPost(PageRequest pageRequest) {
+        return postService.getRecommendPost(pageRequest);
+    }
+
+    @GetMapping("/newest")
+    public Result getNewestPost(PageRequest pageRequest) {
+        return postService.getNewestPost(pageRequest);
+    }
+
+    @GetMapping("/hot")
+    public Result getHostPost(PageRequest pageRequest) {
+        return postService.getHotPost(pageRequest);
+    }
 }

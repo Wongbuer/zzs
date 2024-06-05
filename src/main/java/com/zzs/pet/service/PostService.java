@@ -20,4 +20,10 @@ public interface PostService extends IService<Post> {
     Result modifyPost(Post post);
 
     Result getPostList(PostListRequest postListRequest);
+
+    Result getRecommendPost(PageRequest pageRequest);
+
+    Result getNewestPost(PageRequest pageRequest);
+
+    Result getHotPost(PageRequest pageRequest);
 }

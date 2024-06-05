@@ -41,4 +41,10 @@
             </if>
         </where>
     </select>
+    <select id="selectHotPost" resultMap="BaseResultMap">
+        select post.*
+        from post
+        left join orders on orders.post_id = post.id
+        order by orders.create_time desc, post.create_time desc
+    </select>
 </mapper>
